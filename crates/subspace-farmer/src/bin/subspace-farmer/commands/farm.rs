@@ -316,6 +316,10 @@ struct DsnArgs {
     /// Defines whether we should run blocking Kademlia bootstrap() operation before other requests.
     #[arg(long, default_value_t = false)]
     disable_bootstrap_on_start: bool,
+
+    /// Defines whether we should enable upnp in libp2p
+    #[arg(long, default_value_t = false)]
+    enable_upnp: bool,
 }
 
 #[derive(Debug, Clone)]
