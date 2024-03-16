@@ -200,6 +200,7 @@ fn main() -> Result<(), Error> {
                     max_pending_out_connections: 150,
                     external_addresses: vec![],
                     disable_bootstrap_on_start: false,
+                    enable_upnp: false,
                 }
             };
 
