@@ -24,6 +24,8 @@ use libp2p::kad::{Behaviour as Kademlia, Config as KademliaConfig, Event as Kade
 use libp2p::ping::{Behaviour as Ping, Event as PingEvent};
 use libp2p::swarm::behaviour::toggle::Toggle;
 use libp2p::swarm::NetworkBehaviour;
+use libp2p::upnp::tokio::Behaviour as UPnP;
+use libp2p::upnp::Event as UPnPEvent;
 use libp2p::PeerId;
 use void::Void as VoidEvent;
 
@@ -48,6 +50,8 @@ pub(crate) struct BehaviorConfig<RecordStore> {
     pub(crate) reserved_peers: ReservedPeersConfig,
     /// Autonat configuration.
     pub(crate) autonat: AutonatWrapperConfig,
+    /// UPnP configuration.
+    pub(crate) upnp: bool,
 }
 
 // #[derive(Debug, Clone, Copy)]
@@ -76,6 +80,7 @@ pub(crate) struct Behavior<RecordStore> {
     // pub(crate) special_connected_peers:
     //     Toggle<ConnectedPeersBehaviour<SpecialConnectedPeersInstance>>,
     pub(crate) autonat: AutonatWrapper,
+    pub(crate) upnp: Toggle<UPnP>,
 }
 
 impl<RecordStore> Behavior<RecordStore>
@@ -120,6 +125,11 @@ where
             block_list: BlockListBehaviour::default(),
             reserved_peers: ReservedPeersBehaviour::new(config.reserved_peers),
             autonat: AutonatWrapper::new(config.autonat),
+            upnp: Toggle::from(if config.upnp {
+                Some(UPnP::default())
+            } else {
+                None
+            }),
         }
     }
 }
@@ -135,4 +145,5 @@ pub(crate) enum Event {
     VoidEventStub(VoidEvent),
     ReservedPeers(ReservedPeersEvent),
     Autonat(AutonatEvent),
+    UPnP(UPnPEvent),
 }
