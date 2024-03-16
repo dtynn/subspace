@@ -246,6 +246,8 @@ pub struct Config<LocalRecordProvider> {
     pub external_addresses: Vec<Multiaddr>,
     /// Defines whether we should run blocking Kademlia bootstrap() operation before other requests.
     pub disable_bootstrap_on_start: bool,
+    /// Defines whether we should enable upnp in libp2p
+    pub enable_upnp: bool,
 }
 
 impl<LocalRecordProvider> fmt::Debug for Config<LocalRecordProvider> {
@@ -369,6 +371,7 @@ where
             kademlia_mode: KademliaMode::Static(Mode::Client),
             external_addresses: Vec::new(),
             disable_bootstrap_on_start: false,
+            enable_upnp: false,
         }
     }
 }
@@ -433,6 +436,7 @@ where
         kademlia_mode,
         external_addresses,
         disable_bootstrap_on_start,
+        enable_upnp,
     } = config;
     let local_peer_id = peer_id(&keypair);
 
@@ -488,6 +492,7 @@ where
             local_peer_id,
             servers: bootstrap_addresses.clone(),
         },
+        upnp: enable_upnp,
     });
 
     match (kademlia_mode, external_addresses.is_empty()) {
