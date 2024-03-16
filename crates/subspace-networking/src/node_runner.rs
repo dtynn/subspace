@@ -28,6 +28,7 @@ use libp2p::kad::{
 use libp2p::metrics::{Metrics, Recorder};
 use libp2p::multiaddr::Protocol;
 use libp2p::swarm::{DialError, SwarmEvent};
+use libp2p::upnp::Event as UPnPEvent;
 use libp2p::{Multiaddr, PeerId, Swarm, TransportError};
 use nohash_hasher::IntMap;
 use parking_lot::Mutex;
@@ -433,6 +434,9 @@ where
             }
             SwarmEvent::Behaviour(Event::Autonat(event)) => {
                 self.handle_autonat_event(event).await;
+            }
+            SwarmEvent::Behaviour(Event::UPnP(event)) => {
+                self.handle_upnp_event(event).await;
             }
             SwarmEvent::NewListenAddr { address, .. } => {
                 let shared = match self.shared_weak.upgrade() {
@@ -1194,6 +1198,11 @@ where
                 self.swarm.behaviour_mut().identify.push(connected_peers);
             }
         }
+    }
+
+    async fn handle_upnp_event(&mut self, event: UPnPEvent) {
+        trace!("UPnP event: {:?}", event);
+        // TODO: see if we need more details about this event.
     }
 
     fn handle_command(&mut self, command: Command) {
