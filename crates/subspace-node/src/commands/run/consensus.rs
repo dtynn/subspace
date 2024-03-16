@@ -162,6 +162,10 @@ struct DsnOptions {
     /// Known external addresses
     #[arg(long, alias = "dsn-external-address")]
     dsn_external_addresses: Vec<Multiaddr>,
+
+    /// Defines whether we should enable upnp in libp2p
+    #[arg(long, default_value_t = false)]
+    dsn_enable_upnp: bool,
 }
 
 /// This mode specifies when the block's state (ie, storage) should be pruned (ie, removed) from
@@ -645,6 +649,7 @@ pub(super) fn create_consensus_chain_configuration(
             max_pending_out_connections: dsn_options.dsn_pending_out_connections,
             external_addresses: dsn_options.dsn_external_addresses,
             disable_bootstrap_on_start: dsn_options.dsn_disable_bootstrap_on_start,
+            enable_upnp: dsn_options.dsn_enable_upnp,
         }
     };
 
